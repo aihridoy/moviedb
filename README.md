@@ -52,7 +52,7 @@ This project is a full-stack web application inspired by IMDb and TMDb, featurin
 
 .env.local:
 ```
-MONGO_URI=
-TMDB_API_KEY=
-TMDB_BASE_URL=
-NEXT_PUBLIC_API_BASE_URL=
+MONGO_URI=mongodb+srv://[username]:[password]@cluster0.suylw.mongodb.net/movieDB
+TMDB_API_KEY=your_tmdb_api_key_here
+TMDB_BASE_URL="https://api.themoviedb.org/3"
+NEXT_PUBLIC_API_BASE_URL=https://lws-moviedb-chi.vercel.app
