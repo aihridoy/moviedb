@@ -83,6 +83,35 @@ async function submitRating({ movieId, rating, reviewText }) {
     return await res.json();
 }
 
+async function markAsWatched(movieData) {
+    const res = await fetch(`${BASE}/api/history`, {
+        method: "POST",
+        headers: withCookies({ "Content-Type": "application/json" }),
+        body: JSON.stringify(movieData),
+    });
+
+    if (!res.ok) {
+        const { message } = await res.json();
+        throw new Error(message || "Failed to mark as watched.");
+    }
+
+    return await res.json();
+}
+
+async function removeFromHistory(movieId) {
+    const res = await fetch(`${BASE}/api/history/${movieId}`, {
+        method: "DELETE",
+        headers: withCookies(),
+    });
+
+    if (!res.ok) {
+        const { message } = await res.json();
+        throw new Error(message || "Failed to remove from history.");
+    }
+
+    return await res.json();
+}
+
 async function isMovieInWatchlist(movieId) {
     try {
         const res = await fetch(`${BASE}/api/watchlist?movieId=${movieId}`, {
@@ -97,4 +126,13 @@ async function isMovieInWatchlist(movieId) {
     }
 }
 
-export { registerUser, loginUser, logoutUser, addToWatchlist, isMovieInWatchlist, submitRating };
+export {
+    registerUser,
+    loginUser,
+    logoutUser,
+    addToWatchlist,
+    isMovieInWatchlist,
+    submitRating,
+    markAsWatched,
+    removeFromHistory,
+};

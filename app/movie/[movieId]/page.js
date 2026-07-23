@@ -1,4 +1,5 @@
 import AddWatchListButton from "@/components/AddWatchListButton";
+import MarkAsWatchedButton from "@/components/MarkAsWatchedButton";
 import Header from "@/components/Header";
 import SocialShare from "@/components/SocialShare";
 import MovieReviews from "@/components/MovieReviews";
@@ -136,6 +137,9 @@ export default async function MovieDetails({ params }) {
                                     <div className="flex flex-wrap gap-4">
                                         <div className="text-center">
                                             <AddWatchListButton movie={movie} />
+                                        </div>
+                                        <div className="text-center">
+                                            <MarkAsWatchedButton movie={movie} />
                                         </div>
                                     </div>
                                 </div>
