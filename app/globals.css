@@ -1411,18 +1411,30 @@ video {
   }
 }
 
-/* Hero: slow Ken Burns zoom on the active slide + playful text entrance. */
-@keyframes heroZoom {
-  from { transform: scale(1.08); }
-  to { transform: scale(1); }
+/* Hero: on each slide change the image blurs/zooms in and the text
+   elements rise in, staggered. */
+@keyframes heroReveal {
+  0% { transform: scale(1.14); filter: blur(12px); }
+  35% { filter: blur(0); }
+  100% { transform: scale(1); filter: blur(0); }
 }
 @keyframes heroText {
-  0% { opacity: 0; transform: translateY(24px); }
+  0% { opacity: 0; transform: translateY(28px); }
   100% { opacity: 1; transform: translateY(0); }
 }
-.hero-slide-active .hero-bg {
-  animation: heroZoom 8s ease-out forwards;
+@keyframes heroPop {
+  0% { opacity: 0; transform: translateY(16px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-.hero-text {
-  animation: heroText 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+.hero-slide-active .hero-bg {
+  animation: heroReveal 6s ease-out forwards;
+}
+.hero-title {
+  animation: heroText 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-overview {
+  animation: heroText 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both;
+}
+.hero-cta {
+  animation: heroPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s both;
 }

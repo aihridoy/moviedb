@@ -47,12 +47,12 @@ const Hero = () => {
             {/* Content shares the page container so it lines up with the rows below. */}
             <div className="absolute inset-x-0 bottom-0">
                 <div className="container mx-auto px-4 pb-12 md:pb-16">
-                    <div key={idx} className="hero-text max-w-2xl">
-                        <h1 className="text-3xl md:text-5xl font-bold mb-4">{movie.title}</h1>
-                        <p className="text-sm md:text-lg mb-4 line-clamp-3">{movie.overview}</p>
+                    <div key={idx} className="max-w-2xl">
+                        <h1 className="hero-title text-3xl md:text-5xl font-bold mb-4">{movie.title}</h1>
+                        <p className="hero-overview text-sm md:text-lg mb-4 line-clamp-3">{movie.overview}</p>
                         <Link
                             href={`/movie/${movie.id}`}
-                            className="inline-block bg-white text-black px-6 md:px-8 py-2 rounded-lg font-bold hover:bg-opacity-80 transition"
+                            className="hero-cta inline-block bg-white text-black px-6 md:px-8 py-2 rounded-lg font-bold hover:bg-opacity-80 transition"
                         >
                             ▶ View Details
                         </Link>
