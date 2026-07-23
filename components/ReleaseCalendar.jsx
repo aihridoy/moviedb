@@ -40,6 +40,9 @@ const ReleaseCalendar = () => {
     const firstWeekday = new Date(year, month - 1, 1).getDay();
     const cells = [...Array(firstWeekday).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
 
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() + 1 === month;
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -63,31 +66,43 @@ const ReleaseCalendar = () => {
                     {WEEKDAYS.map((w) => (
                         <div key={w} className="text-center text-gray-400 text-sm font-semibold py-2">{w}</div>
                     ))}
-                    {cells.map((day, i) => (
-                        <div key={i} className="min-h-[90px] bg-zinc-900 rounded p-1 text-xs">
-                            {day && (
-                                <>
-                                    <div className="text-gray-400 mb-1">{day}</div>
-                                    <div className="flex flex-wrap gap-1">
-                                        {(byDay[day] || []).slice(0, 3).map((m) => (
-                                            <Link key={m.id} href={`/movie/${m.id}`} title={m.title}>
-                                                <Image
-                                                    width={40}
-                                                    height={60}
-                                                    src={`https://image.tmdb.org/t/p/w200${m.poster_path}`}
-                                                    alt={m.title}
-                                                    className="w-8 rounded"
-                                                />
-                                            </Link>
-                                        ))}
-                                        {(byDay[day] || []).length > 3 && (
-                                            <span className="text-gray-500">+{byDay[day].length - 3}</span>
-                                        )}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    ))}
+                    {cells.map((day, i) => {
+                        const dayMovies = day ? (byDay[day] || []) : [];
+                        const isToday = day && isCurrentMonth && day === today.getDate();
+                        return (
+                            <div
+                                key={i}
+                                className={`min-h-[96px] rounded p-1 text-xs ${dayMovies.length ? "bg-zinc-900" : "bg-zinc-900/40"} ${isToday ? "ring-2 ring-red-600" : ""}`}
+                            >
+                                {day && (
+                                    <>
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className={isToday ? "text-red-500 font-bold" : "text-gray-400"}>{day}</span>
+                                            {dayMovies.length > 0 && (
+                                                <span className="text-[10px] text-gray-500">{dayMovies.length} 🎬</span>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-wrap gap-1">
+                                            {dayMovies.slice(0, 3).map((m) => (
+                                                <Link key={m.id} href={`/movie/${m.id}`} title={m.title}>
+                                                    <Image
+                                                        width={40}
+                                                        height={60}
+                                                        src={`https://image.tmdb.org/t/p/w200${m.poster_path}`}
+                                                        alt={m.title}
+                                                        className="w-8 rounded hover:ring-1 hover:ring-white"
+                                                    />
+                                                </Link>
+                                            ))}
+                                            {dayMovies.length > 3 && (
+                                                <span className="text-gray-500 self-center">+{dayMovies.length - 3}</span>
+                                            )}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             ) : (
                 <ul className="space-y-2">
