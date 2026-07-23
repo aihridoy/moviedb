@@ -31,19 +31,11 @@ const AddWatchListButton = ({ movie }) => {
         }
     };
 
-    const checkIfMovieIsInWatchlist = async () => {
-        if (!auth?._id) return;
-
-        try {
-            const isInWatchlist = await isMovieInWatchlist(movie.id);
-            setIsAdded(isInWatchlist);
-        } catch (error) {
-            console.error("Error checking watchlist:", error);
-        }
-    };
-
     useEffect(() => {
-        checkIfMovieIsInWatchlist();
+        if (!auth?._id) return;
+        isMovieInWatchlist(movie.id)
+            .then(setIsAdded)
+            .catch((error) => console.error("Error checking watchlist:", error));
     }, [auth, movie]);
 
     return (

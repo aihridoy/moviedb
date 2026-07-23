@@ -1,23 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SearchMovie = ({ closeModal, onSelectMovie, setId }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
+    const debounceTimer = useRef();
 
-    const debounce = (func, delay) => {
-        let timer;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => func(...args), delay);
-        };
-    };
-
-    const fetchMovies = useCallback(
-        debounce(async (query) => {
+    const fetchMovies = (query) => {
+        clearTimeout(debounceTimer.current);
+        debounceTimer.current = setTimeout(async () => {
             if (!query) {
                 fetchTrendingMovies();
                 return;
@@ -25,7 +19,7 @@ const SearchMovie = ({ closeModal, onSelectMovie, setId }) => {
 
             try {
                 setLoading(true);
-                const response = await fetch(`/api/movies/search?query=${query}`);
+                const response = await fetch(`/api/movies/search?query=${encodeURIComponent(query)}`);
                 const data = await response.json();
                 setSearchResults(data.results || []);
             } catch (error) {
@@ -33,9 +27,8 @@ const SearchMovie = ({ closeModal, onSelectMovie, setId }) => {
             } finally {
                 setLoading(false);
             }
-        }, 500),
-        []
-    );
+        }, 500);
+    };
 
     const fetchTrendingMovies = async () => {
         try {
