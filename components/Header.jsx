@@ -71,29 +71,15 @@ const Header = () => {
                     </Link>
 
                     <div className="flex items-center gap-3">
-                        {/* Search + auth stay in the bar on md+; on mobile they live in the drawer. */}
-                        <form onSubmit={handleSearch} className="hidden md:block">
+                        <form onSubmit={handleSearch}>
                             <input
                                 type="text"
                                 placeholder="Search movies..."
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                className="w-44 lg:w-64 bg-black/50 text-white px-4 py-2 rounded border border-gray-600 focus:outline-none focus:border-white"
+                                className="w-36 sm:w-48 lg:w-64 bg-black/50 text-white px-4 py-2 rounded border border-gray-600 focus:outline-none focus:border-white"
                             />
                         </form>
-
-                        {isLoggedIn ? (
-                            <div className="hidden md:flex items-center gap-2">
-                                <span className="text-sm whitespace-nowrap"><span className="font-bold">Welcome,</span> {auth.firstName}</span>
-                                <button onClick={handleLogout} className="bg-black/50 px-3 py-2 rounded border border-gray-600 hover:border-white text-sm">
-                                    Logout
-                                </button>
-                            </div>
-                        ) : (
-                            <Link href="/login" className="hidden md:inline-block bg-black/50 text-white px-4 py-2 rounded border border-gray-600 hover:border-white">
-                                Login
-                            </Link>
-                        )}
 
                         <button
                             onClick={() => setOpen(true)}
@@ -117,12 +103,12 @@ const Header = () => {
             {/* Backdrop */}
             <div
                 onClick={() => setOpen(false)}
-                className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-[450ms] ease-out ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-[650ms] ease-out ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             />
 
             {/* Slide-in drawer */}
             <aside
-                className={`fixed top-0 right-0 z-[70] h-full w-72 max-w-[85%] bg-zinc-900 shadow-2xl will-change-transform transition-transform duration-[450ms] ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
+                className={`fixed top-0 right-0 z-[70] h-full w-72 max-w-[85%] bg-zinc-900 shadow-2xl will-change-transform transition-transform duration-[650ms] ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
             >
                 <div className="flex items-center justify-between p-4 border-b border-zinc-800">
                     <span className="text-red-600 text-xl font-bold">MOVIE DB</span>
@@ -131,25 +117,15 @@ const Header = () => {
                     </button>
                 </div>
 
-                <form onSubmit={handleSearch} className="p-4 border-b border-zinc-800">
-                    <input
-                        type="text"
-                        placeholder="Search movies..."
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        className="w-full bg-zinc-800 text-white px-4 py-2 rounded border border-gray-600 focus:outline-none focus:border-white"
-                    />
-                </form>
-
-                <div className="flex-1 overflow-y-auto p-2">
+                <div className="flex-1 overflow-y-auto p-2 pt-4">
                     {LINKS.map((l, i) => {
                         const active = pathname === l.href;
                         return (
                             <Link
                                 key={l.href}
                                 href={l.href}
-                                style={{ transitionDelay: open ? `${120 + i * 45}ms` : "0ms" }}
-                                className={`flex items-center justify-between px-4 py-3 rounded-lg transition duration-500 ease-out ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"} ${active ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
+                                style={{ transitionDelay: open ? `${180 + i * 65}ms` : "0ms" }}
+                                className={`flex items-center justify-between px-4 py-3 rounded-lg transition duration-[600ms] ease-out ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6"} ${active ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
                             >
                                 <span>{l.label}</span>
                                 {l.badge && isLoggedIn && favoritesCount > 0 && (
@@ -160,8 +136,8 @@ const Header = () => {
                     })}
                     <button
                         onClick={goWatchLater}
-                        className={`w-full text-left px-4 py-3 rounded-lg transition duration-500 ease-out ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"} ${pathname === "/watchlists" ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
-                        style={{ transitionDelay: open ? `${120 + LINKS.length * 45}ms` : "0ms" }}
+                        className={`w-full text-left px-4 py-3 rounded-lg transition duration-[600ms] ease-out ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6"} ${pathname === "/watchlists" ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
+                        style={{ transitionDelay: open ? `${180 + LINKS.length * 65}ms` : "0ms" }}
                     >
                         Watch Later
                     </button>
