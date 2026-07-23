@@ -31,8 +31,19 @@ const Header = () => {
     // Close the drawer on navigation and lock body scroll while it's open.
     useEffect(() => setOpen(false), [pathname]);
     useEffect(() => {
-        document.body.style.overflow = open ? "hidden" : "";
-        return () => { document.body.style.overflow = ""; };
+        if (open) {
+            // Compensate the vanishing scrollbar so the page doesn't jump.
+            const sbw = window.innerWidth - document.documentElement.clientWidth;
+            document.body.style.overflow = "hidden";
+            if (sbw > 0) document.body.style.paddingRight = `${sbw}px`;
+        } else {
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+        };
     }, [open]);
 
     const handleSearch = (e) => {
@@ -80,12 +91,12 @@ const Header = () => {
             {/* Backdrop */}
             <div
                 onClick={() => setOpen(false)}
-                className={`fixed inset-0 z-[60] bg-black/60 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-[450ms] ease-out ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             />
 
             {/* Slide-in drawer */}
             <aside
-                className={`fixed top-0 right-0 z-[70] h-full w-72 max-w-[85%] bg-zinc-900 shadow-2xl transition-transform duration-300 ease-out flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
+                className={`fixed top-0 right-0 z-[70] h-full w-72 max-w-[85%] bg-zinc-900 shadow-2xl will-change-transform transition-transform duration-[450ms] ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
             >
                 <div className="flex items-center justify-between p-4 border-b border-zinc-800">
                     <span className="text-red-600 text-xl font-bold">MOVIE DB</span>
@@ -111,8 +122,8 @@ const Header = () => {
                             <Link
                                 key={l.href}
                                 href={l.href}
-                                style={{ transitionDelay: open ? `${i * 40}ms` : "0ms" }}
-                                className={`flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-300 ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4"} ${active ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
+                                style={{ transitionDelay: open ? `${120 + i * 45}ms` : "0ms" }}
+                                className={`flex items-center justify-between px-4 py-3 rounded-lg transition duration-500 ease-out ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"} ${active ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
                             >
                                 <span>{l.label}</span>
                                 {l.badge && isLoggedIn && favoritesCount > 0 && (
@@ -123,8 +134,8 @@ const Header = () => {
                     })}
                     <button
                         onClick={goWatchLater}
-                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4"} ${pathname === "/watchlists" ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
-                        style={{ transitionDelay: open ? `${LINKS.length * 40}ms` : "0ms" }}
+                        className={`w-full text-left px-4 py-3 rounded-lg transition duration-500 ease-out ${open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-5"} ${pathname === "/watchlists" ? "bg-red-600/20 text-red-500 font-semibold" : "text-white hover:bg-white/5"}`}
+                        style={{ transitionDelay: open ? `${120 + LINKS.length * 45}ms` : "0ms" }}
                     >
                         Watch Later
                     </button>
