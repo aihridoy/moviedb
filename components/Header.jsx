@@ -52,6 +52,9 @@ const Header = () => {
                         <Link href="/history" className="text-white hover:text-gray-300">
                             History
                         </Link>
+                        <Link href="/favorites" className="text-white hover:text-gray-300">
+                            Favorites
+                        </Link>
                         <button
                             onClick={checkLoggedInUser}
                             className="text-white hover:text-gray-300"

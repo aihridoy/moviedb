@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
+import FavoriteButton from './FavoriteButton';
 
 const PopularMovies = () => {
     const [movies, setMovies] = useState([]);
@@ -33,7 +34,7 @@ const PopularMovies = () => {
                 {
                     movies?.map(movie => (
                         <div key={movie.id}
-                            className="flex-shrink-0 w-48 cursor-pointer hover:scale-105 transition-transform"
+                            className="flex-shrink-0 w-48 cursor-pointer hover:scale-105 transition-transform relative"
                         >
                             <Link href={`/movie/${movie.id}`}>
                                 <Image
@@ -44,6 +45,7 @@ const PopularMovies = () => {
                                     className="w-full rounded-lg"
                                 />
                             </Link>
+                            <FavoriteButton movie={movie} overlay />
                         </div>
                     ))
                 }

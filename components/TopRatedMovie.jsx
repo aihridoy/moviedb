@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
+import FavoriteButton from './FavoriteButton';
 
 const TopRatedMovie = () => {
     const [movies, setMovies] = useState([]);
@@ -33,17 +34,18 @@ const TopRatedMovie = () => {
                 {
                     movies?.map(movie => (
                         <div key={movie.id}
-                            className="flex-shrink-0 w-48 cursor-pointer hover:scale-105 transition-transform"
+                            className="flex-shrink-0 w-48 cursor-pointer hover:scale-105 transition-transform relative"
                         >
                             <Link href={`/movie/${movie.id}`}>
                                 <Image
                                     width={200}
                                     height={300}
                                     src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                                    alt="The Shawshank Redemption"
+                                    alt={movie.title || "Movie Poster"}
                                     className="w-full rounded-lg"
                                 />
                             </Link>
+                            <FavoriteButton movie={movie} overlay />
                         </div>
                     ))
                 }

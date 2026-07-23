@@ -112,6 +112,34 @@ async function removeFromHistory(movieId) {
     return await res.json();
 }
 
+async function toggleFavorite(movieData) {
+    const res = await fetch(`${BASE}/api/favorites`, {
+        method: "POST",
+        headers: withCookies({ "Content-Type": "application/json" }),
+        body: JSON.stringify(movieData),
+    });
+
+    if (!res.ok) {
+        const { message } = await res.json();
+        throw new Error(message || "Failed to update favorites.");
+    }
+
+    return await res.json();
+}
+
+async function isFavorite(movieId) {
+    try {
+        const res = await fetch(`${BASE}/api/favorites?movieId=${movieId}`, {
+            headers: withCookies(),
+        });
+        if (!res.ok) return false;
+        const data = await res.json();
+        return data.isFavorite;
+    } catch {
+        return false;
+    }
+}
+
 async function isMovieInWatchlist(movieId) {
     try {
         const res = await fetch(`${BASE}/api/watchlist?movieId=${movieId}`, {
@@ -135,4 +163,6 @@ export {
     submitRating,
     markAsWatched,
     removeFromHistory,
+    toggleFavorite,
+    isFavorite,
 };
