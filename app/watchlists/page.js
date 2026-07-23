@@ -6,6 +6,7 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Link from "next/link";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ExportWatchlist from "@/components/ExportWatchlist";
 
 export default function WatchlistPage() {
     const [watchlists, setWatchlists] = useState([]);
@@ -48,6 +49,7 @@ export default function WatchlistPage() {
                     <LoadingSpinner />
                 </div> : <div className="px-4 pt-24">
                     <h1 className="text-3xl font-bold text-center mb-8">Watchlist</h1>
+                    <ExportWatchlist watchlist={watchlists} />
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {watchlists?.map((movie) => (
                             <div key={movie._id} className="rounded-lg shadow-xl p-4">
