@@ -2,12 +2,13 @@
 
 import { useAuth } from "@/app/hooks/useAuth";
 import { useSearch } from "@/app/contexts/SearchContext";
+import { logoutUser } from "@/app/actions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const Header = () => {
-    const { auth } = useAuth();
+    const { auth, setAuth } = useAuth();
     const { fetchSearchResults } = useSearch();
     const [input, setInput] = useState("");
     const router = useRouter();
@@ -18,6 +19,12 @@ const Header = () => {
         e.preventDefault();
         fetchSearchResults(input);
         router.push("/search-results");
+    };
+
+    const handleLogout = async () => {
+        await logoutUser();
+        setAuth(null);
+        router.push("/");
     };
 
     const checkLoggedInUser = () => {
@@ -52,8 +59,14 @@ const Header = () => {
                 </div>
                 <div className="relative flex items-center">
                     {isLoggedIn ? (
-                        <div className="text-white mx-4">
-                            <span className="font-bold">Welcome,</span> {auth.firstName}
+                        <div className="flex items-center text-white mx-4 gap-3">
+                            <span><span className="font-bold">Welcome,</span> {auth.firstName}</span>
+                            <button
+                                onClick={handleLogout}
+                                className="bg-black bg-opacity-50 px-3 py-1 rounded border border-gray-600 hover:border-white"
+                            >
+                                Logout
+                            </button>
                         </div>
                     ) : (
                         <div className="mx-2">

@@ -9,7 +9,6 @@ const watchlistSchema = new Schema({
     movieId: {
         type: String,
         required: true,
-        unique: true,
     },
     title: {
         type: String,
@@ -24,6 +23,10 @@ const watchlistSchema = new Schema({
         default: Date.now,
     },
 });
+
+// One entry per (user, movie) — was previously unique on movieId alone,
+// which wrongly blocked a second user from saving the same movie.
+watchlistSchema.index({ userId: 1, movieId: 1 }, { unique: true });
 
 export const Watchlist =
     mongoose.models?.watchlists ?? mongoose.model("watchlists", watchlistSchema);

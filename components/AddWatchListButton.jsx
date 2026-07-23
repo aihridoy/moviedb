@@ -16,7 +16,6 @@ const AddWatchListButton = ({ movie }) => {
             return;
         }
         const movieData = {
-            userId: auth._id,
             movieId: movie.id,
             title: movie.title,
             posterPath: movie.poster_path,
@@ -36,7 +35,7 @@ const AddWatchListButton = ({ movie }) => {
         if (!auth?._id) return;
 
         try {
-            const isInWatchlist = await isMovieInWatchlist(auth._id, movie.id);
+            const isInWatchlist = await isMovieInWatchlist(movie.id);
             setIsAdded(isInWatchlist);
         } catch (error) {
             console.error("Error checking watchlist:", error);

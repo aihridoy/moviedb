@@ -5,10 +5,10 @@ export async function POST(req) {
     try {
         await dbConnect();
 
-        const body = await req.json();
+        const { firstName, lastName, email, password } = await req.json();
+        const newUser = await User.create({ firstName, lastName, email, password });
 
-        const newUser = await User.create(body);
-
+        // toJSON transform strips the (already hashed) password from the response.
         return new Response(
             JSON.stringify({ success: true, user: newUser }),
             { status: 201, headers: { "Content-Type": "application/json" } }
@@ -17,6 +17,12 @@ export async function POST(req) {
         if (error.code === 11000) {
             return new Response(
                 JSON.stringify({ message: "Email is already registered." }),
+                { status: 400, headers: { "Content-Type": "application/json" } }
+            );
+        }
+        if (error.name === "ValidationError") {
+            return new Response(
+                JSON.stringify({ message: Object.values(error.errors)[0]?.message || "Invalid input." }),
                 { status: 400, headers: { "Content-Type": "application/json" } }
             );
         }

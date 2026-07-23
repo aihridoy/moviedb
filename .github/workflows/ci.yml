@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+      - run: npm run build
+        env:
+          SESSION_SECRET: ci-secret
+          TMDB_API_KEY: dummy
+          TMDB_BASE_URL: https://api.themoviedb.org/3
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:3000
+          MONGO_URI: mongodb://localhost:27017/ci
