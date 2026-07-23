@@ -27,7 +27,7 @@ const SimilarMovies = ({ movieId }) => {
     }, [movieId]);
 
     return (
-        <div className="container mx-auto px-4 py-8 mt-[250px]">
+        <div className="container mx-auto px-4 py-8">
             <h2 className="text-2xl font-bold mb-4">More Like This</h2>
 
             {loading ? (
