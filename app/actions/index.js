@@ -68,6 +68,21 @@ async function addToWatchlist(movieData) {
     return await res.json();
 }
 
+async function submitRating({ movieId, rating, reviewText }) {
+    const res = await fetch(`${BASE}/api/ratings`, {
+        method: "POST",
+        headers: withCookies({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ movieId, rating, reviewText }),
+    });
+
+    if (!res.ok) {
+        const { message } = await res.json();
+        throw new Error(message || "Failed to submit rating.");
+    }
+
+    return await res.json();
+}
+
 async function isMovieInWatchlist(movieId) {
     try {
         const res = await fetch(`${BASE}/api/watchlist?movieId=${movieId}`, {
@@ -82,4 +97,4 @@ async function isMovieInWatchlist(movieId) {
     }
 }
 
-export { registerUser, loginUser, logoutUser, addToWatchlist, isMovieInWatchlist };
+export { registerUser, loginUser, logoutUser, addToWatchlist, isMovieInWatchlist, submitRating };

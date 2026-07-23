@@ -1,6 +1,7 @@
 import AddWatchListButton from "@/components/AddWatchListButton";
 import Header from "@/components/Header";
 import SocialShare from "@/components/SocialShare";
+import MovieReviews from "@/components/MovieReviews";
 import { getMovie, getCredits } from "@/lib/tmdb";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -148,6 +149,8 @@ export default async function MovieDetails({ params }) {
                     </div>
                 </div>
             </div>
+
+            <MovieReviews movieId={movieId} />
 
             <SimilarMovies movieId={movieId} />
         </>
