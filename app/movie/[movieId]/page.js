@@ -1,5 +1,6 @@
 import AddWatchListButton from "@/components/AddWatchListButton";
 import MarkAsWatchedButton from "@/components/MarkAsWatchedButton";
+import FavoriteButton from "@/components/FavoriteButton";
 import Header from "@/components/Header";
 import SocialShare from "@/components/SocialShare";
 import MovieReviews from "@/components/MovieReviews";
@@ -140,6 +141,9 @@ export default async function MovieDetails({ params }) {
                                         </div>
                                         <div className="text-center">
                                             <MarkAsWatchedButton movie={movie} />
+                                        </div>
+                                        <div className="text-center">
+                                            <FavoriteButton movie={movie} />
                                         </div>
                                     </div>
                                 </div>
