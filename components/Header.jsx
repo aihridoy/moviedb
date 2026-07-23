@@ -49,6 +49,9 @@ const Header = () => {
                         <Link href="/compare-movies" className="text-white hover:text-gray-300">
                             Compare Movies
                         </Link>
+                        <Link href="/history" className="text-white hover:text-gray-300">
+                            History
+                        </Link>
                         <button
                             onClick={checkLoggedInUser}
                             className="text-white hover:text-gray-300"
