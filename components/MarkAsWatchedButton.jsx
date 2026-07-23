@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useToast } from "@/app/contexts/ToastContext";
 import { markAsWatched } from "@/app/actions";
 
 const MarkAsWatchedButton = ({ movie }) => {
     const { auth } = useAuth();
+    const { toast } = useToast();
     const router = useRouter();
     const [done, setDone] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -25,8 +27,9 @@ const MarkAsWatchedButton = ({ movie }) => {
                 genres: (movie.genres || []).map((g) => g.name),
             });
             setDone(true);
+            toast("Marked as watched");
         } catch (error) {
-            alert(error.message || "Something went wrong.");
+            toast(error.message || "Something went wrong.", "error");
         } finally {
             setLoading(false);
         }

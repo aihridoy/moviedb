@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import AuthProvider from "./providers/AuthProvider";
 import { SearchProvider } from "./contexts/SearchContext";
+import { ToastProvider } from "./contexts/ToastContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,11 +26,13 @@ export default async function RootLayout({ children }) {
       <body
         className="bg-black text-white"
       >
-        <AuthProvider>
-          <SearchProvider>
-            {children}
-          </SearchProvider>
-        </AuthProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <SearchProvider>
+              {children}
+            </SearchProvider>
+          </AuthProvider>
+        </ToastProvider>
       </body>
     </html>
   );

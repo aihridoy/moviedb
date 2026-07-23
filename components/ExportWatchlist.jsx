@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/app/contexts/ToastContext";
 
 const ExportWatchlist = ({ watchlist = [] }) => {
+    const { toast } = useToast();
     const [copied, setCopied] = useState(false);
 
     if (watchlist.length === 0) return null;
@@ -19,9 +21,10 @@ const ExportWatchlist = ({ watchlist = [] }) => {
         try {
             await navigator.clipboard.writeText(text);
             setCopied(true);
+            toast("Watchlist copied to clipboard");
             setTimeout(() => setCopied(false), 2000);
         } catch {
-            alert("Could not copy to clipboard.");
+            toast("Could not copy to clipboard.", "error");
         }
     };
 
