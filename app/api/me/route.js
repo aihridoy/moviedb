@@ -2,6 +2,8 @@ import { User } from "@/models/user-model";
 import { dbConnect } from "@/services/mongo";
 import { getUserId } from "@/lib/session";
 
+export const dynamic = "force-dynamic"; // reads cookies — never prerender
+
 export async function GET() {
     try {
         const userId = getUserId();
