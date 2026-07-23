@@ -7,11 +7,12 @@ import Header from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useToast } from "@/app/contexts/ToastContext";
-import { toggleFavorite } from "@/app/actions";
+import { useFavorites } from "@/app/contexts/FavoritesContext";
 
 export default function FavoritesPage() {
     const { auth } = useAuth();
     const { toast } = useToast();
+    const { toggle } = useFavorites();
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -31,7 +32,7 @@ export default function FavoritesPage() {
 
     const handleRemove = async (movie) => {
         try {
-            await toggleFavorite({ movieId: movie.movieId, title: movie.title, posterPath: movie.posterPath });
+            await toggle({ id: movie.movieId, title: movie.title, poster_path: movie.posterPath });
             setFavorites((prev) => prev.filter((f) => f.movieId !== movie.movieId));
             toast("Removed from favorites");
         } catch (error) {

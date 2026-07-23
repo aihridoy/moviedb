@@ -1,25 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useToast } from "@/app/contexts/ToastContext";
-import { toggleFavorite, isFavorite } from "@/app/actions";
+import { useFavorites } from "@/app/contexts/FavoritesContext";
 
 // overlay: icon-only heart for movie cards. Labeled button otherwise.
-// checkInitial defaults off for overlays to avoid a fetch per card on grids.
-const FavoriteButton = ({ movie, overlay = false, checkInitial = !overlay }) => {
+// Favorited state comes from FavoritesContext (loaded once), so hearts stay
+// filled across the app without a fetch per card.
+const FavoriteButton = ({ movie, overlay = false }) => {
     const { auth } = useAuth();
     const { toast } = useToast();
+    const { toggle, isFav } = useFavorites();
     const router = useRouter();
-    const [favorited, setFavorited] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (checkInitial && auth?._id) {
-            isFavorite(movie.id).then(setFavorited).catch(() => {});
-        }
-    }, [checkInitial, auth, movie.id]);
+    const favorited = isFav(movie.id);
 
     const handleClick = async (e) => {
         e.preventDefault();
@@ -30,12 +26,7 @@ const FavoriteButton = ({ movie, overlay = false, checkInitial = !overlay }) => 
         }
         setLoading(true);
         try {
-            const { favorited: next } = await toggleFavorite({
-                movieId: movie.id,
-                title: movie.title,
-                posterPath: movie.poster_path,
-            });
-            setFavorited(next);
+            const { favorited: next } = await toggle(movie);
             toast(next ? "Added to favorites" : "Removed from favorites");
         } catch (error) {
             toast(error.message || "Something went wrong.", "error");
