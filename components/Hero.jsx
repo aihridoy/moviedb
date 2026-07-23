@@ -6,7 +6,6 @@ import Link from "next/link";
 const Hero = () => {
     const [movies, setMovies] = useState([]);
     const [idx, setIdx] = useState(0);
-    const [shown, setShown] = useState(true);
 
     useEffect(() => {
         fetch("/api/movies/trending")
@@ -15,55 +14,59 @@ const Hero = () => {
             .catch(() => {});
     }, []);
 
-    // Cross-fade to a movie: fade out, swap, fade back in.
-    const goTo = (next) => {
-        setShown(false);
-        setTimeout(() => {
-            setIdx(next);
-            setShown(true);
-        }, 500);
-    };
-
     useEffect(() => {
         if (movies.length < 2) return;
-        const t = setInterval(() => goTo((idx + 1) % movies.length), 6000);
+        const t = setInterval(() => setIdx((i) => (i + 1) % movies.length), 7000);
         return () => clearInterval(t);
-    }, [movies, idx]);
+    }, [movies]);
+
+    if (movies.length === 0) return <div className="h-screen bg-zinc-900 animate-pulse" />;
 
     const movie = movies[idx];
 
-    if (!movie) return <div className="h-screen bg-zinc-900 animate-pulse" />;
-
     return (
-        <div id="hero" className="relative h-screen overflow-hidden">
-            <div
-                className={`absolute inset-0 transition-all duration-700 ease-out ${shown ? "opacity-100 scale-100" : "opacity-0 scale-105"}`}
-                style={{
-                    backgroundImage: `url("https://image.tmdb.org/t/p/original${movie.backdrop_path}")`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30" />
-
-            <div className={`absolute bottom-0 left-0 p-6 md:p-12 max-w-full transition-all duration-700 ease-out ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-                <h1 className="text-3xl md:text-5xl font-bold mb-4">{movie.title}</h1>
-                <p className="text-sm md:text-lg max-w-2xl mb-4 line-clamp-3">{movie.overview}</p>
-                <Link
-                    href={`/movie/${movie.id}`}
-                    className="inline-block bg-white text-black px-8 py-2 rounded-lg font-bold hover:bg-opacity-80"
+        <div className="relative h-screen overflow-hidden">
+            {/* Stacked slides cross-fade into each other (no fade-to-black). */}
+            {movies.map((m, i) => (
+                <div
+                    key={m.id}
+                    className={`hero-slide absolute inset-0 transition-opacity duration-[1200ms] ease-in-out ${i === idx ? "opacity-100 hero-slide-active" : "opacity-0"}`}
                 >
-                    ▶ View Details
-                </Link>
+                    <div
+                        className="hero-bg absolute inset-0"
+                        style={{
+                            backgroundImage: `url("https://image.tmdb.org/t/p/original${m.backdrop_path}")`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                        }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40" />
+                </div>
+            ))}
+
+            {/* Content shares the page container so it lines up with the rows below. */}
+            <div className="absolute inset-x-0 bottom-0">
+                <div className="container mx-auto px-4 pb-12 md:pb-16">
+                    <div key={idx} className="hero-text max-w-2xl">
+                        <h1 className="text-3xl md:text-5xl font-bold mb-4">{movie.title}</h1>
+                        <p className="text-sm md:text-lg mb-4 line-clamp-3">{movie.overview}</p>
+                        <Link
+                            href={`/movie/${movie.id}`}
+                            className="inline-block bg-white text-black px-6 md:px-8 py-2 rounded-lg font-bold hover:bg-opacity-80 transition"
+                        >
+                            ▶ View Details
+                        </Link>
+                    </div>
+                </div>
             </div>
 
-            <div className="absolute bottom-6 right-8 flex gap-2">
+            <div className="absolute bottom-6 right-4 md:right-8 flex gap-2">
                 {movies.map((_, i) => (
                     <button
                         key={i}
-                        onClick={() => goTo(i)}
+                        onClick={() => setIdx(i)}
                         aria-label={`Show slide ${i + 1}`}
-                        className={`w-2.5 h-2.5 rounded-full transition ${i === idx ? "bg-red-600" : "bg-white/40 hover:bg-white/70"}`}
+                        className={`h-2.5 rounded-full transition-all duration-500 ease-out ${i === idx ? "w-6 bg-red-600" : "w-2.5 bg-white/40 hover:bg-white/70"}`}
                     />
                 ))}
             </div>

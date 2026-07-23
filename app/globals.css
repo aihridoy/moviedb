@@ -1410,3 +1410,19 @@ video {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* Hero: slow Ken Burns zoom on the active slide + playful text entrance. */
+@keyframes heroZoom {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+@keyframes heroText {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.hero-slide-active .hero-bg {
+  animation: heroZoom 8s ease-out forwards;
+}
+.hero-text {
+  animation: heroText 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
