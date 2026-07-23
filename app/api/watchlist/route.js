@@ -1,12 +1,16 @@
 import { Watchlist } from "@/models/watchlist-model";
 import { dbConnect } from "@/services/mongo";
+import { getUserId } from "@/lib/session";
 
 export async function POST(req) {
     try {
-        const body = await req.json();
-        const { userId, movieId, title, posterPath } = body;
+        const userId = getUserId();
+        if (!userId) {
+            return new Response(JSON.stringify({ message: "Unauthorized." }), { status: 401 });
+        }
 
-        if (!userId || !movieId || !title || !posterPath) {
+        const { movieId, title, posterPath } = await req.json();
+        if (!movieId || !title || !posterPath) {
             return new Response(
                 JSON.stringify({ message: "All fields are required." }),
                 { status: 400 }
@@ -42,16 +46,13 @@ export async function POST(req) {
 
 export async function GET(req) {
     try {
-        const { searchParams } = new URL(req.url);
-        const userId = searchParams.get("userId");
-        const movieId = searchParams.get("movieId");
-
+        const userId = getUserId();
         if (!userId) {
-            return new Response(
-                JSON.stringify({ message: "User ID is required." }),
-                { status: 400 }
-            );
+            return new Response(JSON.stringify({ message: "Unauthorized." }), { status: 401 });
         }
+
+        const { searchParams } = new URL(req.url);
+        const movieId = searchParams.get("movieId");
 
         await dbConnect();
 
@@ -61,10 +62,10 @@ export async function GET(req) {
                 JSON.stringify({ isInWatchlist: !!movie }),
                 { status: 200 }
             );
-        } else {
-            const watchlist = await Watchlist.find({ userId }).lean();
-            return new Response(JSON.stringify({ watchlist }), { status: 200 });
         }
+
+        const watchlist = await Watchlist.find({ userId }).lean();
+        return new Response(JSON.stringify({ watchlist }), { status: 200 });
     } catch (error) {
         console.error("🔥 Error fetching Watchlist:", error.message);
         return new Response(

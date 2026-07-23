@@ -1,21 +1,16 @@
 import AddWatchListButton from "@/components/AddWatchListButton";
 import Header from "@/components/Header";
 import SocialShare from "@/components/SocialShare";
+import { getMovie, getCredits } from "@/lib/tmdb";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
 const SimilarMovies = dynamic(() => import('@/components/SimilarMovies'), { suspense: true, ssr: false });
 
-export async function generateMetadata({ params, searchParams }, parent) {
+export async function generateMetadata({ params }) {
     const { movieId } = params;
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/movies/${movieId}`, {
-            next: { revalidate: 10 },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch movie metadata");
-
-        const movie = await res.json();
+        const movie = await getMovie(movieId);
 
         return {
             title: movie?.title?.slice(0, 50),
@@ -39,13 +34,7 @@ export default async function MovieDetails({ params }) {
     let movie, casts;
 
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/movies/${movieId}`, {
-            next: { revalidate: 10 },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch movie details");
-
-        movie = await res.json();
+        movie = await getMovie(movieId);
     } catch (error) {
         console.error("Movie fetch error:", error);
         return (
@@ -56,13 +45,7 @@ export default async function MovieDetails({ params }) {
     }
 
     try {
-        const castRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/movies/${movieId}/credits`, {
-            next: { revalidate: 10 },
-        });
-
-        if (!castRes.ok) throw new Error("Failed to fetch casts");
-
-        casts = await castRes.json();
+        casts = await getCredits(movieId);
     } catch (error) {
         console.error("Casts fetch error:", error);
         casts = { cast: [] };

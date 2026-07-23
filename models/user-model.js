@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
     firstName: {
@@ -25,11 +26,26 @@ const userSchema = new Schema({
         type: String,
         required: [true, "Password is required"],
         minlength: [6, "Password must be at least 6 characters long"],
+        select: false, // never returned by queries unless explicitly .select("+password")
     },
     createdAt: {
         type: Date,
         default: Date.now,
     },
+}, {
+    // Strip secrets whenever a user doc is serialized to JSON.
+    toJSON: {
+        transform(doc, ret) {
+            delete ret.password;
+            delete ret.__v;
+            return ret;
+        },
+    },
+});
+
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
+    this.password = await bcrypt.hash(this.password, 10);
 });
 
 export const User = mongoose.models?.users ?? mongoose.model("users", userSchema);

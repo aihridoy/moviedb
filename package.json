@@ -6,20 +6,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --test"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "mongoose": "^8.9.0",
-    "next": "14.2.20",
+    "mongoose": "^8.24.1",
+    "next": "14.2.35",
     "next-share": "^0.27.0",
     "react": "^18",
     "react-dom": "^18",
-    "sharp": "^0.33.5"
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.2.20",
+    "eslint-config-next": "14.2.35",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
   }

@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
+import { getMovie } from "@/lib/tmdb";
 
 export async function GET(req, { params }) {
-    const { id } = params;
-
-    const res = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
-    );
-
-    if (!res.ok) {
-        return NextResponse.json({ error: "Movie not found" }, { status: 404 });
+    try {
+        return NextResponse.json(await getMovie(params.id));
+    } catch (error) {
+        return NextResponse.json({ error: "Movie not found" }, { status: error.status || 500 });
     }
-
-    const data = await res.json();
-    return NextResponse.json(data);
 }

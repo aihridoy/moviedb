@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
+import { getNowPlaying } from "@/lib/tmdb";
 
-export async function GET() {
-    const url = `${process.env.TMDB_BASE_URL}/movie/now_playing?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`;
-
+export async function GET(req) {
+    const page = new URL(req.url).searchParams.get("page") || 1;
     try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            return NextResponse.json({ error: "Failed to fetch popular movies" }, { status: response.status });
-        }
-
-        const data = await response.json();
-        return NextResponse.json(data);
+        return NextResponse.json(await getNowPlaying(page));
     } catch (error) {
-        return NextResponse.json({ error: "An error occurred" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch now playing movies" }, { status: error.status || 500 });
     }
 }
