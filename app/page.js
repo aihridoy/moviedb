@@ -4,6 +4,7 @@ import PopularMovies from "@/components/PopularMovies";
 import TopRatedMovie from "@/components/TopRatedMovie";
 import TrendingMovies from "@/components/TrendingMovies";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <PopularMovies />
         <TopRatedMovie />
       </div>
+      <Footer />
     </>
   );
 }
