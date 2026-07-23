@@ -9,11 +9,13 @@ import StarRating from "./StarRating";
 const MAX = 1000;
 
 const ReviewForm = ({ movieId, initialRating, onSubmitted }) => {
-    const { auth } = useAuth();
+    const { auth, loading: authLoading } = useAuth();
     const [rating, setRating] = useState(initialRating?.rating || 0);
     const [reviewText, setReviewText] = useState(initialRating?.reviewText || "");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    if (authLoading) return null;
 
     if (!auth?._id) {
         return (

@@ -21,7 +21,7 @@ function groupByDate(items) {
 }
 
 const WatchHistory = () => {
-    const { auth } = useAuth();
+    const { auth, loading: authLoading } = useAuth();
     const { toast } = useToast();
     const [data, setData] = useState({ history: [], stats: null });
     const [loading, setLoading] = useState(true);
@@ -36,9 +36,10 @@ const WatchHistory = () => {
     }, []);
 
     useEffect(() => {
+        if (authLoading) return;
         if (auth?._id) load();
         else setLoading(false);
-    }, [auth, load]);
+    }, [auth, authLoading, load]);
 
     const handleRemove = async (movieId) => {
         try {
@@ -50,6 +51,10 @@ const WatchHistory = () => {
         }
     };
 
+    if (authLoading || (auth?._id && loading)) {
+        return <div className="flex justify-center min-h-[40vh] items-center"><LoadingSpinner /></div>;
+    }
+
     if (!auth?._id) {
         return (
             <p className="text-center text-gray-400 mt-8">
@@ -57,8 +62,6 @@ const WatchHistory = () => {
             </p>
         );
     }
-
-    if (loading) return <div className="flex justify-center min-h-[40vh] items-center"><LoadingSpinner /></div>;
 
     if (data.history.length === 0) {
         return <p className="text-center text-xl text-gray-500 mt-8">No watch history yet.</p>;
