@@ -10,7 +10,7 @@ import { useToast } from "@/app/contexts/ToastContext";
 import { useFavorites } from "@/app/contexts/FavoritesContext";
 
 export default function FavoritesPage() {
-    const { auth } = useAuth();
+    const { auth, loading: authLoading } = useAuth();
     const { toast } = useToast();
     const { toggle } = useFavorites();
     const [favorites, setFavorites] = useState([]);
@@ -26,9 +26,10 @@ export default function FavoritesPage() {
     };
 
     useEffect(() => {
+        if (authLoading) return;
         if (auth?._id) load();
         else setLoading(false);
-    }, [auth]);
+    }, [auth, authLoading]);
 
     const handleRemove = async (movie) => {
         try {
@@ -46,12 +47,12 @@ export default function FavoritesPage() {
             <main className="container mx-auto px-4 pt-24 pb-12">
                 <h1 className="text-3xl font-bold mb-8">My Favorites</h1>
 
-                {!auth?._id ? (
+                {authLoading || (auth?._id && loading) ? (
+                    <div className="flex justify-center min-h-[40vh] items-center"><LoadingSpinner /></div>
+                ) : !auth?._id ? (
                     <p className="text-center text-gray-400">
                         <Link href="/login" className="text-red-600 hover:underline">Sign in</Link> to see your favorites.
                     </p>
-                ) : loading ? (
-                    <div className="flex justify-center min-h-[40vh] items-center"><LoadingSpinner /></div>
                 ) : favorites.length === 0 ? (
                     <p className="text-center text-xl text-gray-500">No favorites yet.</p>
                 ) : (
