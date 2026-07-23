@@ -18,7 +18,7 @@ const Header = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         fetchSearchResults(input);
-        router.push("/search-results");
+        router.push(`/search-results?query=${encodeURIComponent(input)}`);
     };
 
     const handleLogout = async () => {
