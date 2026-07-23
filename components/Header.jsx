@@ -59,6 +59,9 @@ const Header = () => {
                         <Link href="/random" className="text-white hover:text-gray-300">
                             Random
                         </Link>
+                        <Link href="/calendar" className="text-white hover:text-gray-300">
+                            Calendar
+                        </Link>
                         <button
                             onClick={checkLoggedInUser}
                             className="text-white hover:text-gray-300"
