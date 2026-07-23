@@ -55,6 +55,9 @@ const Header = () => {
                         <Link href="/favorites" className="text-white hover:text-gray-300">
                             Favorites
                         </Link>
+                        <Link href="/random" className="text-white hover:text-gray-300">
+                            Random
+                        </Link>
                         <button
                             onClick={checkLoggedInUser}
                             className="text-white hover:text-gray-300"
