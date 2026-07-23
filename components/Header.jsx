@@ -65,26 +65,52 @@ const Header = () => {
     return (
         <>
             <nav className="fixed w-full z-50 bg-gradient-to-b from-black/90 to-transparent">
-                <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div className="container mx-auto px-4 py-4 flex justify-between items-center gap-4">
                     <Link href="/" className="text-red-600 text-2xl md:text-3xl font-bold whitespace-nowrap">
                         MOVIE DB
                     </Link>
 
-                    <button
-                        onClick={() => setOpen(true)}
-                        aria-label="Open menu"
-                        className="relative w-10 h-10 flex items-center justify-center rounded hover:bg-white/10 transition"
-                    >
-                        <span className="sr-only">Menu</span>
-                        <div className="w-6 flex flex-col gap-1.5">
-                            <span className="block h-0.5 bg-white rounded" />
-                            <span className="block h-0.5 bg-white rounded" />
-                            <span className="block h-0.5 bg-white rounded" />
-                        </div>
-                        {isLoggedIn && favoritesCount > 0 && (
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full" />
+                    <div className="flex items-center gap-3">
+                        {/* Search + auth stay in the bar on md+; on mobile they live in the drawer. */}
+                        <form onSubmit={handleSearch} className="hidden md:block">
+                            <input
+                                type="text"
+                                placeholder="Search movies..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                className="w-44 lg:w-64 bg-black/50 text-white px-4 py-2 rounded border border-gray-600 focus:outline-none focus:border-white"
+                            />
+                        </form>
+
+                        {isLoggedIn ? (
+                            <div className="hidden md:flex items-center gap-2">
+                                <span className="text-sm whitespace-nowrap"><span className="font-bold">Welcome,</span> {auth.firstName}</span>
+                                <button onClick={handleLogout} className="bg-black/50 px-3 py-2 rounded border border-gray-600 hover:border-white text-sm">
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <Link href="/login" className="hidden md:inline-block bg-black/50 text-white px-4 py-2 rounded border border-gray-600 hover:border-white">
+                                Login
+                            </Link>
                         )}
-                    </button>
+
+                        <button
+                            onClick={() => setOpen(true)}
+                            aria-label="Open menu"
+                            className="relative w-10 h-10 flex items-center justify-center rounded hover:bg-white/10 transition"
+                        >
+                            <span className="sr-only">Menu</span>
+                            <div className="w-6 flex flex-col gap-1.5">
+                                <span className="block h-0.5 bg-white rounded" />
+                                <span className="block h-0.5 bg-white rounded" />
+                                <span className="block h-0.5 bg-white rounded" />
+                            </div>
+                            {isLoggedIn && favoritesCount > 0 && (
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full" />
+                            )}
+                        </button>
+                    </div>
                 </div>
             </nav>
 
