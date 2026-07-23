@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useToast } from "@/app/contexts/ToastContext";
 import { toggleFavorite, isFavorite } from "@/app/actions";
 
 // overlay: icon-only heart for movie cards. Labeled button otherwise.
 // checkInitial defaults off for overlays to avoid a fetch per card on grids.
 const FavoriteButton = ({ movie, overlay = false, checkInitial = !overlay }) => {
     const { auth } = useAuth();
+    const { toast } = useToast();
     const router = useRouter();
     const [favorited, setFavorited] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -34,8 +36,9 @@ const FavoriteButton = ({ movie, overlay = false, checkInitial = !overlay }) => 
                 posterPath: movie.poster_path,
             });
             setFavorited(next);
+            toast(next ? "Added to favorites" : "Removed from favorites");
         } catch (error) {
-            alert(error.message || "Something went wrong.");
+            toast(error.message || "Something went wrong.", "error");
         } finally {
             setLoading(false);
         }

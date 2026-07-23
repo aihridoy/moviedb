@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useToast } from "@/app/contexts/ToastContext";
 import { removeFromHistory } from "@/app/actions";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -21,6 +22,7 @@ function groupByDate(items) {
 
 const WatchHistory = () => {
     const { auth } = useAuth();
+    const { toast } = useToast();
     const [data, setData] = useState({ history: [], stats: null });
     const [loading, setLoading] = useState(true);
 
@@ -42,8 +44,9 @@ const WatchHistory = () => {
         try {
             await removeFromHistory(movieId);
             load();
+            toast("Removed from history");
         } catch (error) {
-            alert(error.message || "Failed to remove.");
+            toast(error.message || "Failed to remove.", "error");
         }
     };
 

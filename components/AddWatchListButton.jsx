@@ -2,11 +2,13 @@
 
 import { addToWatchlist, isMovieInWatchlist } from "@/app/actions";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useToast } from "@/app/contexts/ToastContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const AddWatchListButton = ({ movie }) => {
     const { auth } = useAuth()
+    const { toast } = useToast()
     const [isAdded, setIsAdded] = useState(false);
     const isLoggedIn = !!auth?.firstName;
     const router = useRouter()
@@ -23,11 +25,11 @@ const AddWatchListButton = ({ movie }) => {
 
         try {
             await addToWatchlist(movieData);
-            alert("Movie added to Watch List!");
+            toast("Added to your Watch List");
             setIsAdded(true);
         } catch (error) {
             console.error("Error adding movie to Watch List:", error);
-            alert(error.message || "Something went wrong.");
+            toast(error.message || "Something went wrong.", "error");
         }
     };
 

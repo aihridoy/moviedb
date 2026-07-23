@@ -6,10 +6,12 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useToast } from "@/app/contexts/ToastContext";
 import { toggleFavorite } from "@/app/actions";
 
 export default function FavoritesPage() {
     const { auth } = useAuth();
+    const { toast } = useToast();
     const [favorites, setFavorites] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -31,8 +33,9 @@ export default function FavoritesPage() {
         try {
             await toggleFavorite({ movieId: movie.movieId, title: movie.title, posterPath: movie.posterPath });
             setFavorites((prev) => prev.filter((f) => f.movieId !== movie.movieId));
+            toast("Removed from favorites");
         } catch (error) {
-            alert(error.message || "Failed to remove.");
+            toast(error.message || "Failed to remove.", "error");
         }
     };
 
