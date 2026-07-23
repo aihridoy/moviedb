@@ -23,34 +23,40 @@ This project is a full-stack web application inspired by IMDb and TMDb, featurin
 ## ✨ Key Features
 
 ### 🔐 Authentication & Security
-- Secure user registration and login system
-- Password hashing with `bcrypt` for enhanced security
-- MongoDB-based user data storage and session management
-- Protected routes and personalized user experiences
+- Secure user registration and login
+- Password hashing with `bcrypt` (passwords never returned to the client)
+- **Signed, httpOnly cookie sessions** (HMAC via Node `crypto`, no JWT dependency) — persist across refresh, cleared on logout
+- Session-protected API routes; watchlist/history/favorites scoped per user
 
 ### 🎥 Movie Discovery
-- Browse extensive movie database powered by TMDB API
-- Advanced search functionality with real-time results
-- Dynamic movie data rendering with detailed information
-- High-quality movie posters and backdrop images
+- Browse trending, popular, top-rated, and now-playing movies (TMDB API)
+- Search with results, plus **advanced filters** (genre, year range, minimum rating, language, runtime) via TMDB Discover
+- Movie detail pages with cast, genres, and similar titles
+- **Random Movie Picker** — "I'm Feeling Lucky" with optional genre filter
+- **Release Calendar** — monthly grid + list view of releases
+
+### ⭐ Ratings & Reviews
+- Rate movies 1–10 and write reviews
+- Average rating and all reviews shown on each movie page
+- One rating per user per movie (updatable)
 
 ### 📝 Personalized Experience
-- **Watchlist Management**: Save and organize favorite movies
-- **Personal Collections**: Create custom movie lists
-- **User Preferences**: Tailored recommendations based on viewing history
-- **Social Sharing**: Share movie details across social platforms
+- **Watchlist**: save movies, export to CSV or copy a shareable list
+- **Watch History**: mark movies watched; timeline + stats (total watched, average rating, top genres)
+- **Favorites**: heart movies from cards or the detail page; dedicated favorites grid
+- **Recently Viewed**: last 20 viewed movies (localStorage), shown on the home page
+- **Social Sharing**: share movie details across platforms (`next-share`)
 
 ### 🎨 User Interface & Performance
-- Fully responsive design optimized for all devices
-- Modern, sleek UI crafted with **Tailwind CSS**
-- Lightning-fast image loading with `sharp` optimization
-- Smooth animations and intuitive navigation
+- **Dark / light theme toggle**, persisted in localStorage (no flash on load)
+- Fully responsive design built with **Tailwind CSS**
+- Fast image loading with `sharp` optimization
+- Custom animated loading spinner, route-level error/loading states
 
 ### 🔧 Additional Features
-- Social media sharing integration with `next-share`
-- Image optimization and caching for better performance
-- SEO-optimized pages for better search visibility
-- Error handling and loading states for smooth UX
+- SEO: dynamic `sitemap.xml` and `robots.txt`, per-movie metadata
+- Centralized TMDB access layer (`lib/tmdb.js`)
+- Unit tests (session token) + CI (lint, test, build) via GitHub Actions
 
 ---
 
@@ -64,8 +70,8 @@ This project is a full-stack web application inspired by IMDb and TMDb, featurin
 
 ### Database & Authentication
 - **Database**: MongoDB with Mongoose ODM
-- **Security**: bcrypt for password hashing
-- **Session Management**: Secure user authentication system
+- **Security**: bcrypt password hashing
+- **Session Management**: signed httpOnly cookies (HMAC via Node `crypto`, no JWT dependency)
 
 ### External APIs & Services
 - **Movie Data**: The Movie Database (TMDB) API
@@ -120,12 +126,18 @@ Before you begin, ensure you have the following installed:
    # TMDB API Configuration
    # Get your API key from https://www.themoviedb.org/settings/api
    TMDB_API_KEY=your_tmdb_api_key_here
-   TMDB_BASE_URL="https://api.themoviedb.org/3"
+   TMDB_BASE_URL=https://api.themoviedb.org/3
 
    # Application Configuration
    # Base URL for API calls (update for production)
    NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+
+   # Session Configuration
+   # Secret used to sign session cookies — generate with: openssl rand -hex 32
+   SESSION_SECRET=your_long_random_secret
    ```
+
+   > A ready-to-copy template lives in `.env.example`.
 
    > ⚠️ **Security Note**: Never commit your `.env.local` file to version control. Replace placeholder values with your actual credentials.
 
@@ -150,6 +162,13 @@ npm run build
 npm start
 ```
 
+### Testing & Linting
+
+```bash
+npm test     # node:test unit tests (session token)
+npm run lint # ESLint
+```
+
 ---
 
 ## 📁 Project Structure
@@ -157,27 +176,22 @@ npm start
 ```
 lws-moviedb/
 ├── app/                    # Next.js 14 App Router
-│   ├── api/               # API routes for backend functionality
-│   ├── auth/              # Authentication pages
-│   ├── movie/             # Movie detail pages
-│   └── ...                # Other app pages
+│   ├── api/               # Route handlers (movies, auth, ratings, history, favorites, watchlist, random, calendar)
+│   ├── actions/           # Server actions (login, watchlist, ratings, ...)
+│   ├── contexts/          # Search + Theme context
+│   ├── hooks/             # useAuth, useRecentlyViewed
+│   ├── movie/[movieId]/   # Movie detail page
+│   ├── history/ favorites/ random/ calendar/ ...  # Feature pages
+│   ├── sitemap.js robots.js error.js loading.js
+│   └── layout.js page.js
 ├── components/            # Reusable React components
-│   ├── ui/                # UI components
-│   ├── movie/             # Movie-specific components
-│   └── auth/              # Authentication components
-├── lib/                   # Utility functions and configurations
-│   ├── mongodb.js         # Database connection
-│   ├── tmdb.js           # TMDB API helpers
-│   └── utils.js          # General utilities
-├── models/                # MongoDB/Mongoose models
-│   ├── User.js           # User model
-│   └── Movie.js          # Movie model
-├── public/                # Static assets
-│   └── images/           # Application images
-├── styles/                # Global styles and Tailwind config
-├── .env.local            # Environment variables
-├── next.config.js        # Next.js configuration
-└── package.json          # Project dependencies
+├── lib/                   # session.js, token.mjs, tmdb.js, genres.js
+├── models/                # user, watchlist, rating, history, favorite (Mongoose)
+├── services/mongo.js      # DB connection
+├── test/                  # node:test unit tests
+├── .env.example           # Env var template
+├── next.config.mjs        # Next.js configuration
+└── package.json           # Project dependencies
 ```
 
 ---
@@ -190,8 +204,11 @@ lws-moviedb/
 |----------|-------------|---------|------------|
 | `MONGO_URI` | MongoDB connection string | `mongodb+srv://user:pass@cluster.mongodb.net/movieDB` | [MongoDB Atlas](https://www.mongodb.com/atlas) |
 | `TMDB_API_KEY` | The Movie Database API key | `your_tmdb_api_key_here` | [TMDB API](https://www.themoviedb.org/settings/api) |
-| `TMDB_BASE_URL` | TMDB API base URL | `"https://api.themoviedb.org/3"` | Static value |
+| `TMDB_BASE_URL` | TMDB API base URL | `https://api.themoviedb.org/3` | Static value |
 | `NEXT_PUBLIC_API_BASE_URL` | Application base URL | `http://localhost:3000` | Your domain |
+| `SESSION_SECRET` | Secret for signing session cookies | `openssl rand -hex 32` | Generate yourself |
+
+> ⚠️ Enter values **without quotes** in the Vercel dashboard. `SESSION_SECRET` is required — auth-gated features return 500 without it.
 
 ### Getting TMDB API Key
 1. Create an account at [The Movie Database](https://www.themoviedb.org/)
@@ -204,16 +221,22 @@ lws-moviedb/
 
 ## 🎯 API Endpoints
 
-### Movie Endpoints
-- `GET /api/movies` - Get popular movies
-- `GET /api/movies/search?q={query}` - Search movies
-- `GET /api/movies/{id}` - Get movie details
+### Movies (TMDB)
+- `GET /api/movies/popular` · `trending` · `top-rated` · `now-playing` — accept `?page=`
+- `GET /api/movies/search?query={q}` — text search, or filters (`genres,yearMin,yearMax,ratingMin,language,runtimeMin,runtimeMax`) via Discover
+- `GET /api/movies/{id}` — details · `/{id}/credits` · `/{id}/similar`
+- `GET /api/random?genre={id}` — random movie
+- `GET /api/calendar?year={y}&month={m}` — releases in a month
 
-### User Endpoints
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/user/watchlist` - Get user watchlist
-- `POST /api/user/watchlist` - Add movie to watchlist
+### Auth & Session
+- `POST /api/register` · `POST /api/login` · `GET /api/me` (current user from session)
+- Logout is a server action that clears the session cookie
+
+### User Data (session-protected)
+- `GET|POST /api/watchlist` · `GET /api/watchlists` · `GET /api/watchlist/export` (CSV)
+- `POST /api/ratings` · `GET /api/ratings?movieId={id}` · `GET /api/ratings/{movieId}`
+- `GET|POST /api/history` · `DELETE /api/history/{movieId}`
+- `GET|POST /api/favorites`
 
 ---
 
@@ -221,12 +244,11 @@ lws-moviedb/
 
 - 🎭 **Actor Profiles**: Detailed actor information and filmography
 - 🎬 **Movie Recommendations**: AI-powered personalized suggestions
-- 👥 **Social Features**: Follow friends and see their watchlists
-- ⭐ **Rating System**: Rate and review movies
-- 🎪 **Advanced Filters**: Genre, year, rating, and more
+- 👥 **Public shareable watchlist**: token-based read-only link (currently exports to CSV / copy-list)
+- ⭐ **Half-star ratings**: finer-grained rating input
+- 🌗 **Fuller light theme**: per-component `dark:` variants for pixel-perfect light mode
 - 📱 **Mobile App**: React Native companion application
 - 🎵 **Trailer Integration**: Watch movie trailers inline
-- 🏆 **Achievement System**: Gamify the movie discovery experience
 
 ---
 
