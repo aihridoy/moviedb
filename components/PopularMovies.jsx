@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import LoadingSpinner from './LoadingSpinner';
+import MovieRowSkeleton from './MovieRowSkeleton';
 import FavoriteButton from './FavoriteButton';
 
 const PopularMovies = () => {
@@ -26,7 +26,7 @@ const PopularMovies = () => {
         fetchTrendingMovies();
     }, []);
 
-    if (loading) return <LoadingSpinner />;
+    if (loading) return <MovieRowSkeleton title="Popular on MOVIE DB" />;
     return (
         <section className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Popular on MOVIE DB</h2>
