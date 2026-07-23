@@ -46,9 +46,9 @@ const Hero = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30" />
 
-            <div className={`absolute bottom-0 left-0 p-12 transition-all duration-700 ease-out ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-                <h1 className="text-5xl font-bold mb-4">{movie.title}</h1>
-                <p className="text-lg max-w-2xl mb-4 line-clamp-3">{movie.overview}</p>
+            <div className={`absolute bottom-0 left-0 p-6 md:p-12 max-w-full transition-all duration-700 ease-out ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+                <h1 className="text-3xl md:text-5xl font-bold mb-4">{movie.title}</h1>
+                <p className="text-sm md:text-lg max-w-2xl mb-4 line-clamp-3">{movie.overview}</p>
                 <Link
                     href={`/movie/${movie.id}`}
                     className="inline-block bg-white text-black px-8 py-2 rounded-lg font-bold hover:bg-opacity-80"
