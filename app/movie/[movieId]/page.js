@@ -4,6 +4,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import Header from "@/components/Header";
 import SocialShare from "@/components/SocialShare";
 import MovieReviews from "@/components/MovieReviews";
+import RecentlyViewed from "@/components/RecentlyViewed";
 import { getMovie, getCredits } from "@/lib/tmdb";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -65,6 +66,7 @@ export default async function MovieDetails({ params }) {
     return (
         <>
             <Header />
+            <RecentlyViewed track={{ id: movie.id, title: movie.title, poster_path: movie.poster_path }} />
             <div id="movieDetails" className="min-h-screen pt-20 mb-8">
                 <div className="relative h-screen">
                     <div className="absolute inset-0">
