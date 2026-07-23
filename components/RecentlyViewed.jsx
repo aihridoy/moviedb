@@ -4,17 +4,19 @@ import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRecentlyViewed } from "@/app/hooks/useRecentlyViewed";
+import MovieRowSkeleton from "./MovieRowSkeleton";
 
 // With `track`, records a visit and renders nothing (used on the movie page).
 // Without it, renders the horizontal recently-viewed strip (used on home).
 const RecentlyViewed = ({ track }) => {
-    const { items, add } = useRecentlyViewed();
+    const { items, add, loaded } = useRecentlyViewed();
 
     useEffect(() => {
         if (track) add(track);
     }, [track, add]);
 
     if (track) return null;
+    if (!loaded) return <MovieRowSkeleton title="Recently Viewed" />;
     if (items.length === 0) return null;
 
     return (

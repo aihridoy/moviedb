@@ -15,9 +15,11 @@ function read() {
 // Last 20 viewed movies (id/title/poster), persisted in localStorage.
 export function useRecentlyViewed() {
     const [items, setItems] = useState([]);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         setItems(read());
+        setLoaded(true);
     }, []);
 
     const add = useCallback((movie) => {
@@ -28,5 +30,5 @@ export function useRecentlyViewed() {
         setItems(next);
     }, []);
 
-    return { items, add };
+    return { items, add, loaded };
 }
