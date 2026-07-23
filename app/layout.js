@@ -2,7 +2,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import AuthProvider from "./providers/AuthProvider";
 import { SearchProvider } from "./contexts/SearchContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,23 +21,15 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className="bg-black text-white"
       >
-        {/* Set the theme class before paint to avoid a flash of the wrong theme. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.classList.add(t);}catch(e){}})();`,
-          }}
-        />
-        <ThemeProvider>
-          <AuthProvider>
-            <SearchProvider>
-              {children}
-            </SearchProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <SearchProvider>
+            {children}
+          </SearchProvider>
+        </AuthProvider>
       </body>
     </html>
   );

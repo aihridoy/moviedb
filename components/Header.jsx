@@ -3,7 +3,6 @@
 import { useAuth } from "@/app/hooks/useAuth";
 import { useSearch } from "@/app/contexts/SearchContext";
 import { logoutUser } from "@/app/actions";
-import ThemeToggle from "./ThemeToggle";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -71,7 +70,6 @@ const Header = () => {
                     </div>
                 </div>
                 <div className="relative flex items-center">
-                    <ThemeToggle />
                     {isLoggedIn ? (
                         <div className="flex items-center text-white mx-4 gap-3">
                             <span><span className="font-bold">Welcome,</span> {auth.firstName}</span>

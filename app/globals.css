@@ -1410,30 +1410,3 @@ video {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-
-/*
-Light theme override layer. The app is styled dark-first with hardcoded
-utility classes, so rather than adding dark: variants to every component we
-remap the common dark surfaces/text under `html.light`. Ceiling: components
-using colors not listed here keep their dark value; extend this block or add
-proper dark: variants if a fuller light theme is needed.
-*/
-html.light body {
-  background-color: #ffffff;
-  color: #171717;
-}
-html.light .bg-black,
-html.light .bg-black\/50,
-html.light .bg-opacity-50 {
-  background-color: #ffffff !important;
-}
-html.light .bg-zinc-900 { background-color: #f3f4f6 !important; }
-html.light .bg-zinc-800 { background-color: #e5e7eb !important; }
-html.light .bg-zinc-700 { background-color: #d1d5db !important; }
-html.light .bg-black\/40,
-html.light .bg-black\/70 { background-color: rgba(0, 0, 0, 0.06) !important; }
-html.light .text-white,
-html.light .text-light { color: #171717 !important; }
-html.light .text-gray-400 { color: #4b5563 !important; }
-html.light .text-gray-300 { color: #374151 !important; }
-html.light .border-gray-600 { border-color: #d1d5db !important; }
