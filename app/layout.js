@@ -3,6 +3,7 @@ import "./globals.css";
 import AuthProvider from "./providers/AuthProvider";
 import { SearchProvider } from "./contexts/SearchContext";
 import { ToastProvider } from "./contexts/ToastContext";
+import { FavoritesProvider } from "./contexts/FavoritesContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,9 +29,11 @@ export default async function RootLayout({ children }) {
       >
         <ToastProvider>
           <AuthProvider>
-            <SearchProvider>
-              {children}
-            </SearchProvider>
+            <FavoritesProvider>
+              <SearchProvider>
+                {children}
+              </SearchProvider>
+            </FavoritesProvider>
           </AuthProvider>
         </ToastProvider>
       </body>

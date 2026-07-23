@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/app/hooks/useAuth";
 import { useSearch } from "@/app/contexts/SearchContext";
+import { useFavorites } from "@/app/contexts/FavoritesContext";
 import { logoutUser } from "@/app/actions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,6 +11,7 @@ import React, { useState } from "react";
 const Header = () => {
     const { auth, setAuth } = useAuth();
     const { fetchSearchResults } = useSearch();
+    const { count: favoritesCount } = useFavorites();
     const [input, setInput] = useState("");
     const router = useRouter();
 
@@ -52,8 +54,13 @@ const Header = () => {
                         <Link href="/history" className="text-white hover:text-gray-300">
                             History
                         </Link>
-                        <Link href="/favorites" className="text-white hover:text-gray-300">
+                        <Link href="/favorites" className="text-white hover:text-gray-300 inline-flex items-center gap-1">
                             Favorites
+                            {favoritesCount > 0 && (
+                                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 leading-none">
+                                    {favoritesCount}
+                                </span>
+                            )}
                         </Link>
                         <Link href="/random" className="text-white hover:text-gray-300">
                             Random
