@@ -5,7 +5,7 @@ import { useSearch } from "@/app/contexts/SearchContext";
 import { useFavorites } from "@/app/contexts/FavoritesContext";
 import { logoutUser } from "@/app/actions";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from "react";
 
 const Header = () => {
@@ -14,8 +14,11 @@ const Header = () => {
     const { count: favoritesCount } = useFavorites();
     const [input, setInput] = useState("");
     const router = useRouter();
+    const pathname = usePathname();
 
     const isLoggedIn = !!auth?.firstName;
+    const navCls = (href) =>
+        `hover:text-gray-300 ${pathname === href ? "text-red-600 font-semibold" : "text-white"}`;
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -45,16 +48,16 @@ const Header = () => {
                         MOVIE DB
                     </Link>
                     <div className="ml-8 space-x-4">
-                        <Link href="/" className="text-white hover:text-gray-300">
+                        <Link href="/" className={navCls("/")}>
                             Home
                         </Link>
-                        <Link href="/compare-movies" className="text-white hover:text-gray-300">
+                        <Link href="/compare-movies" className={navCls("/compare-movies")}>
                             Compare Movies
                         </Link>
-                        <Link href="/history" className="text-white hover:text-gray-300">
+                        <Link href="/history" className={navCls("/history")}>
                             History
                         </Link>
-                        <Link href="/favorites" className="text-white hover:text-gray-300 inline-flex items-center gap-1">
+                        <Link href="/favorites" className={`${navCls("/favorites")} inline-flex items-center gap-1`}>
                             Favorites
                             {favoritesCount > 0 && (
                                 <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 leading-none">
@@ -62,15 +65,15 @@ const Header = () => {
                                 </span>
                             )}
                         </Link>
-                        <Link href="/random" className="text-white hover:text-gray-300">
+                        <Link href="/random" className={navCls("/random")}>
                             Random
                         </Link>
-                        <Link href="/calendar" className="text-white hover:text-gray-300">
+                        <Link href="/calendar" className={navCls("/calendar")}>
                             Calendar
                         </Link>
                         <button
                             onClick={checkLoggedInUser}
-                            className="text-white hover:text-gray-300"
+                            className={navCls("/watchlists")}
                         >
                             Watch Later
                         </button>
